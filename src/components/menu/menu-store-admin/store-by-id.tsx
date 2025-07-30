@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import AddProductPage from "./add-product";
+import AddProductPage from "@/components/menu/menu-store-admin/add-product";
 
 interface Product {
   id: string;
@@ -29,18 +29,13 @@ interface Store {
   StoreProduct: StoreProduct[];
 }
 
-export default function StoreDetailPage({
-  params,
-}: {
-  params: { storeId: string };
-}) {
+export default function StoreDetailPage({ storeId }: { storeId: string }) {
   const [store, setStore] = useState<Store | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function getStoreById() {
       try {
-        const { storeId } = params;
         const baseUrl = process.env.NEXT_PUBLIC_DOMAIN;
         const res = await fetch(`${baseUrl}/api/v1/stores/${storeId}`, {
           credentials: "include",
@@ -53,19 +48,18 @@ export default function StoreDetailPage({
         setLoading(false);
       }
     }
+
     getStoreById();
-  }, [params]);
+  }, [storeId]);
 
   if (loading) return <p className="p-4">Loading...</p>;
-
   if (!store) return <p className="p-4 text-red-500">Store not found.</p>;
 
   return (
     <section className="max-w-2xl mx-auto p-6 border border-gray-300 shadow-xl/20 hover:shadow-xl transition-shadow duration-300 cursor-pointer hover:bg-gray-50">
       <h1 className="text-2xl font-bold mb-2">{store.name}</h1>
-
       <p className="text-gray-700 mb-4">
-        {store.address}, {store.city},{store.province},{store.postalCode}
+        {store.address}, {store.city}, {store.province}, {store.postalCode}
       </p>
 
       <AddProductPage params={{ storeId: store.id }} />
