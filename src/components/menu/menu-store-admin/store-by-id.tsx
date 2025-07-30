@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import AddProductPage from "@/components/menu/menu-store-admin/add-product";
 
 interface Product {
   id: string;
@@ -11,6 +10,7 @@ interface Product {
   weight: number;
   stock: number;
 }
+
 interface StoreProduct {
   productId: string;
   storeId: string;
@@ -19,6 +19,7 @@ interface StoreProduct {
   updatedAt: string;
   Product: Product;
 }
+
 interface Store {
   id: string;
   name: string;
@@ -34,7 +35,7 @@ export default function StoreDetailPage({ storeId }: { storeId: string }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function getStoreById() {
+    async function fetchStore() {
       try {
         const baseUrl = process.env.NEXT_PUBLIC_DOMAIN;
         const res = await fetch(`${baseUrl}/api/v1/stores/${storeId}`, {
@@ -43,35 +44,33 @@ export default function StoreDetailPage({ storeId }: { storeId: string }) {
         const data = await res.json();
         setStore(data.data);
       } catch (err) {
-        console.error("Error fetching store:", err);
+        console.error("Fetch error:", err);
       } finally {
         setLoading(false);
       }
     }
 
-    getStoreById();
+    fetchStore();
   }, [storeId]);
 
   if (loading) return <p className="p-4">Loading...</p>;
   if (!store) return <p className="p-4 text-red-500">Store not found.</p>;
 
   return (
-    <section className="max-w-2xl mx-auto p-6 border border-gray-300 shadow-xl/20 hover:shadow-xl transition-shadow duration-300 cursor-pointer hover:bg-gray-50">
+    <section className="max-w-2xl mx-auto p-6 border">
       <h1 className="text-2xl font-bold mb-2">{store.name}</h1>
       <p className="text-gray-700 mb-4">
         {store.address}, {store.city}, {store.province}, {store.postalCode}
       </p>
 
-      <AddProductPage params={{ storeId: store.id }} />
-
       <h2 className="text-xl font-semibold mb-2">Products</h2>
       <ul>
-        {store.StoreProduct.map((storeProduct) => (
-          <li key={storeProduct.productId} className="mb-4">
-            <h3 className="text-lg font-medium">{storeProduct.Product.name}</h3>
-            <p className="text-gray-700">{storeProduct.Product.description}</p>
-            <p>Price: ${storeProduct.Product.price}</p>
-            <p>Weight: {storeProduct.Product.weight} kg</p>
+        {store.StoreProduct.map((item) => (
+          <li key={item.productId} className="mb-4">
+            <h3 className="text-lg font-medium">{item.Product.name}</h3>
+            <p>{item.Product.description}</p>
+            <p>Price: ${item.Product.price}</p>
+            <p>Weight: {item.Product.weight} kg</p>
           </li>
         ))}
       </ul>

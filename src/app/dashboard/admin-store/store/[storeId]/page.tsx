@@ -1,12 +1,14 @@
+// src/app/dashboard/admin-store/store/[storeId]/page.tsx
 import MenuNavbarStoreAdmin from "@/components/header/header-admin-store/header-admin-store";
 import StoreDetailPage from "@/components/menu/menu-store-admin/store-by-id";
 
-// ✅ Langsung definisikan props secara eksplisit
-export default function StoreByIdPage({
-  params,
-}: {
-  params: { storeId: string };
-}) {
+interface PageProps {
+  params: {
+    storeId: string;
+  };
+}
+
+export default function StoreByIdPage({ params }: PageProps) {
   return (
     <MenuNavbarStoreAdmin>
       <StoreDetailPage storeId={params.storeId} />
